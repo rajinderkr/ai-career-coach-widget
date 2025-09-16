@@ -12,17 +12,45 @@ export const handler = async (event) => {
   }
 
   try {
+    const apiKey = process.env.API_KEY;
+
+    // --- Enhanced Logging ---
+    // This will show up in your Netlify Function logs and confirm if the key is loaded.
+    if (apiKey && apiKey.length > 10) {
+      console.log('Gemini Proxy Log: API_KEY environment variable loaded successfully. Length:', apiKey.length);
+    } else {
+      console.error('Gemini Proxy Log: CRITICAL - API_KEY environment variable not found or is too short in the server environment.');
+    }
+    // --- End Enhanced Logging ---
+    
     // FIX: Destructure 'generationConfig' from the body instead of 'config'.
     // This makes the data contract between the client and proxy explicit,
     // resolving a subtle bug where the API call was failing.
     const { model, contents, generationConfig } = JSON.parse(event.body);
-    const apiKey = process.env.API_KEY;
+
+    // --- START: API Key Diagnostic Check ---
+    if (contents === 'ping_api_key_status') {
+      let statusMessage = '';
+      if (apiKey && apiKey.length > 10) {
+        statusMessage = `Success: API key is configured on the server. Key length: ${apiKey.length}.`;
+      } else if (apiKey) {
+        statusMessage = 'Error: API key found, but it appears to be too short or invalid.';
+      } else {
+        statusMessage = 'Error: API_KEY environment variable was not found on the server.';
+      }
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: statusMessage }),
+      };
+    }
+    // --- END: API Key Diagnostic Check ---
+
 
     if (!apiKey) {
-      console.error("CRITICAL: API_KEY environment variable not set in Netlify.");
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Server configuration error. Please contact support.' }),
+        body: JSON.stringify({ error: 'Server configuration error. API key not found.' }),
       };
     }
 
