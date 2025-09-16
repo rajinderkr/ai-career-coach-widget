@@ -9,7 +9,7 @@ import { extractTextFromResume } from './resumeService';
 // the API key on the client-side.
 const callGeminiProxy = async (payload: { model: string; contents: any; config?: any; }): Promise<{ text: string }> => {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25-second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60-second timeout
 
     // Standardize the 'contents' payload to match the format that is confirmed to work.
     // The user's manual test proved that the proxy works when 'contents' is a structured array.
