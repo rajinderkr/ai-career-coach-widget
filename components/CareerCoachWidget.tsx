@@ -19,7 +19,7 @@ import PlacementPlan from './views/PlacementPlan';
 import ProfileSettings from './views/ProfileSettings';
 import Chip from './shared/Chip';
 import { getChatResponse } from '../services/geminiService';
-import { DAILY_CREDIT_ALLOCATION } from '../constants';
+import { DAILY_CREDIT_ALLOCATION, FEATURE_FLAGS } from '../constants';
 
 const LOCAL_STORAGE_KEY = 'careerCoachProfile';
 
@@ -89,16 +89,8 @@ const CareerCoachWidget: React.FC = () => {
 
 
   useEffect(() => {
-    const fetchFeatureFlags = async () => {
-        try {
-            const response = await fetch('/features.json');
-            const data = await response.json();
-            setFeatureFlags(data);
-        } catch (error) {
-            console.error("Failed to fetch feature flags:", error);
-        }
-    };
-    fetchFeatureFlags();
+    // Feature flags are now bundled with the app, no need to fetch.
+    setFeatureFlags(FEATURE_FLAGS as unknown as FeatureFlags);
   }, []);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);

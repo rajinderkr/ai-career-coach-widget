@@ -1,5 +1,5 @@
 {
-  "name": "Raji AI Career Coach",
+  "name": "ai-career-coach-widget",
   "description": "An AI-powered career chatbot that provides personalized guidance on resume improvement, salary insights, interview preparation, and job searching.",
   "requestFramePermissions": [
     "microphone"

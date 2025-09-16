@@ -30,6 +30,35 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, updateProfil
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [processingStep, setProcessingStep] = useState(0);
 
+  const [debugMessage, setDebugMessage] = useState<string | null>(null);
+  const [isTestingApi, setIsTestingApi] = useState(false);
+
+  const handleApiTest = async () => {
+      setIsTestingApi(true);
+      setDebugMessage('Pinging server...');
+      try {
+          const response = await fetch('/api/gemini-proxy', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  contents: 'ping_api_key_status'
+              }),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            setDebugMessage(`Error: The test endpoint returned status ${response.status}. Message: ${data.error || response.statusText}`);
+          } else {
+            setDebugMessage(`${data.text}`);
+          }
+      } catch (error) {
+          console.error("API Test failed:", error);
+          setDebugMessage('API Test failed. The proxy endpoint may not be deployed correctly. Check browser console.');
+      } finally {
+          setIsTestingApi(false);
+      }
+  };
+
+
   const handleSaveChanges = async () => {
     setIsProcessing(true);
     if (newResumeFile) {
@@ -177,6 +206,21 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, updateProfil
 
       {error && <p className="text-sm text-red-600 mt-2 text-center">{error}</p>}
       {successMessage && <p className="text-sm text-green-600 mt-2 text-center">{successMessage}</p>}
+
+      {/* API Connection Test Section */}
+      <div className="mt-6 border-t border-gray-200 pt-4">
+          <h4 className="text-xs font-bold text-gray-500 uppercase mb-2">API Connection Test</h4>
+          <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+              <button
+                  onClick={handleApiTest}
+                  disabled={isTestingApi}
+                  className="px-3 py-1.5 rounded-md bg-amber-100 text-amber-800 hover:bg-amber-200 text-sm font-semibold disabled:opacity-50"
+              >
+                  {isTestingApi ? 'Testing...' : 'Test Gemini API'}
+              </button>
+              <p className="text-xs text-gray-600 flex-1">{debugMessage || 'Click the button to check the connection to the AI server.'}</p>
+          </div>
+      </div>
     </Card>
   );
 };

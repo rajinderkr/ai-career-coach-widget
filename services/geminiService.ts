@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import { GEMINI_MODEL } from '../constants';
 // FIX: Added LinkedInTipsData to imports to support getLinkedInTips function.
@@ -19,8 +20,12 @@ const callGeminiProxy = async (payload: { model: string; contents: any; config?:
         : payload.contents;
 
     try {
-        // Use the direct function URL that was proven to work, bypassing the unreliable redirect.
-        const response = await fetch('/.netlify/functions/gemini-proxy', {
+        // CRITICAL FIX: Use the full, absolute URL of the live Netlify proxy.
+        // This allows the embedded app to work from any domain (e.g., localhost or brainyscout.com).
+        // The user MUST replace 'YOUR_SITE_NAME' with their actual Netlify site name.
+        const apiUrl = 'https://brilliaai-career-coach.netlify.app/.netlify/functions/gemini-proxy';
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
