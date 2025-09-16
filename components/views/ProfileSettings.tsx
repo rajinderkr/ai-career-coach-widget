@@ -207,20 +207,6 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ profile, updateProfil
       {error && <p className="text-sm text-red-600 mt-2 text-center">{error}</p>}
       {successMessage && <p className="text-sm text-green-600 mt-2 text-center">{successMessage}</p>}
 
-      {/* API Connection Test Section */}
-      <div className="mt-6 border-t border-gray-200 pt-4">
-          <h4 className="text-xs font-bold text-gray-500 uppercase mb-2">API Connection Test</h4>
-          <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-              <button
-                  onClick={handleApiTest}
-                  disabled={isTestingApi}
-                  className="px-3 py-1.5 rounded-md bg-amber-100 text-amber-800 hover:bg-amber-200 text-sm font-semibold disabled:opacity-50"
-              >
-                  {isTestingApi ? 'Testing...' : 'Test Gemini API'}
-              </button>
-              <p className="text-xs text-gray-600 flex-1">{debugMessage || 'Click the button to check the connection to the AI server.'}</p>
-          </div>
-      </div>
     </Card>
   );
 };
