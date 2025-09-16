@@ -11,6 +11,13 @@ const callGeminiProxy = async (payload: { model: string; contents: any; config?:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000); // 25-second timeout
 
+    // Standardize the 'contents' payload to match the format that is confirmed to work.
+    // The user's manual test proved that the proxy works when 'contents' is a structured array.
+    // This ensures all calls from the app now use this correct, robust format.
+    const structuredContents = typeof payload.contents === 'string'
+        ? [{ role: 'user', parts: [{ text: payload.contents }] }]
+        : payload.contents;
+
     try {
         // Use the cleaner proxy path defined in netlify.toml. This is a best practice.
         const response = await fetch('/api/gemini-proxy', {
@@ -18,7 +25,7 @@ const callGeminiProxy = async (payload: { model: string; contents: any; config?:
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: payload.model,
-                contents: payload.contents,
+                contents: structuredContents,
                 // Use a different key to avoid conflicts on the server.
                 generationConfig: payload.config || {} 
             }),
