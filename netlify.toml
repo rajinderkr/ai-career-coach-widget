@@ -1,0 +1,31 @@
+# This is the configuration file for Netlify.
+# It tells Netlify how to build and deploy your site.
+
+[build]
+  # This command installs all the necessary tools and then builds
+  # your application from the source code (.tsx) into plain HTML/JS.
+  command = "npm install && npm run build"
+  
+  # This specifies the directory where the finished, built website
+  # files will be located. Netlify will serve the files from this folder.
+  publish = "dist"
+  
+  # This tells Netlify where your secure serverless functions are located.
+  functions = "netlify/functions/"
+
+# This section is essential for Single Page Applications (SPAs) like yours.
+# It ensures that any direct navigation to a sub-page (e.g., /salary-insights)
+# still loads the main index.html file, allowing your app's internal
+# routing to take over.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# This is a proxy redirect for your secure API function.
+# It makes it so that when your frontend calls '/api/gemini-proxy',
+# Netlify forwards that request to your secure serverless function.
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
