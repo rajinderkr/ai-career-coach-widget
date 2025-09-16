@@ -19,8 +19,8 @@ const callGeminiProxy = async (payload: { model: string; contents: any; config?:
         : payload.contents;
 
     try {
-        // Use the cleaner proxy path defined in netlify.toml. This is a best practice.
-        const response = await fetch('/api/gemini-proxy', {
+        // Use the direct function URL that was proven to work, bypassing the unreliable redirect.
+        const response = await fetch('/.netlify/functions/gemini-proxy', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

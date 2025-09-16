@@ -21,11 +21,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-# This is a proxy redirect for your secure API function.
-# It makes it so that when your frontend calls '/api/gemini-proxy',
-# Netlify forwards that request to your secure serverless function.
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
